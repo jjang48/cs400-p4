@@ -69,11 +69,11 @@ public class WordProcessor {
          *      together as: streamOfLines.map(...).filter(a -> ...).map(...) and so on
          */
 
-        Stream<String> fileStream = Files.lines(Paths.get(filepath)); // gets a Stream of lines
-        fileStream = fileStream.map(String::trim); // trims each line
-        fileStream = fileStream.map(String::toUpperCase); // each line is set to UPPERCASE
-        fileStream = fileStream.filter(x -> x != null && !x.equals("")); // filters out empty lines
-        return fileStream;
+        Stream<String> wordStream = Files.lines(Paths.get(filepath)); // gets a Stream of lines
+        wordStream = wordStream.map(String::trim); // trims each line
+        wordStream = wordStream.filter(x -> x != null && !x.equals("")); // filters out empty lines
+        wordStream = wordStream.map(String::toUpperCase); // each line is set to UPPERCASE
+        return wordStream;
     }
 
     /**
