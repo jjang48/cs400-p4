@@ -69,10 +69,10 @@ public class WordProcessor {
          *      together as: streamOfLines.map(...).filter(a -> ...).map(...) and so on
          */
 
-        Stream<String> fileStream = Files.lines(Paths.get(filepath));
-        fileStream = fileStream.map(String::trim);
-        fileStream = fileStream.map(String::toUpperCase);
-        fileStream = fileStream.filter(x -> !x.equals(""));
+        Stream<String> fileStream = Files.lines(Paths.get(filepath)); // gets a Stream of lines
+        fileStream = fileStream.map(String::trim); // trims each line
+        fileStream = fileStream.map(String::toUpperCase); // each line is set to UPPERCASE
+        fileStream = fileStream.filter(x -> x != null && !x.equals("")); // filters out empty lines
         return fileStream;
     }
 
@@ -88,6 +88,53 @@ public class WordProcessor {
      * @return true if word1 and word2 are adjacent else false
      */
     public static boolean isAdjacent(String word1, String word2) {
+        // if lengths of words are equal, check for 1 char replacement
+        if (word1.length() == word2.length()) {
+            int diff = 0; // number of corresponding character differences between words
+            for (int i = 0; i < word1.length(); i++) {
+                if (word1.charAt(i) != word2.charAt(i)) {
+                    diff++;
+                    if (diff > 1) { // more than one char different
+                        return false;
+                    }
+                }
+            }
+            // if code reaches here, diff == 0 or diff == 1
+            // diff == 0 iff words are equal
+            return diff == 1;
+        }
+
+        // if lengths of words differ by 1, check for whether deleting a char from longer
+        // word makes two words equal (deleting is symmetric to inserting)
+        if (Math.abs(word1.length() - word2.length()) == 1) {
+            // figure out which word is longer:
+            String longer;
+            String shorter;
+            if (word1.length() > word2.length()) {
+                longer = word1;
+                shorter = word2;
+            } else {
+                longer = word2;
+                shorter = word1;
+            }
+
+            // special case: see if deleting last char from longer works
+            if (longer.substring(0, longer.length() - 1).equals(shorter)) {
+                return true;
+            }
+
+            // if code reaches here, there exists an i, 0 <= i <= shorter.length() - 1, such that
+            // longer.charAt(i) != shorter.charAt(i)
+            // two words are adjacent iff they are equal after removing longer.charAt(i) from longer
+            // (I think I have a proof of the above fact?)
+            for (int i = 0; i < shorter.length(); i++) {
+                if (longer.charAt(i) != shorter.charAt(i)) {
+                    return shorter.equals(longer.substring(0, i) + longer.substring(i + 1));
+                }
+            }
+        }
+
+        // final case: if lengths of words differ by more than 1, they cannot be adjacent
         return false;
     }
 
