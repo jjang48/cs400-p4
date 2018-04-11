@@ -2,6 +2,27 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Stream;
+///////////////////////////////// FILE HEADER //////////////////////////////////
+//
+// Assignment name: DictionaryGraph
+//
+// Files submitted: Graph.java, GraphTest.java, WordProcessor.java,
+// GraphProcessor.java, GraphProcessorTest.java
+//
+// Course: CS 400 Spring 2018
+//
+// Authors: Bryan Jin, Joon Jang, Aanjanaye Kajaria
+//
+// Emails: bjin23@wisc.edu, jjang48@wisc.edu, kajaria@wisc.edu
+//
+// Lecturer's Name: Deb Deppeler
+//
+// Outside sources: NONE
+//
+// Known bugs: NONE
+//
+// Due date: 4/16/2018
+/////////////////////////////// 80 COLUMNS WIDE ///////////////////////////////
 
 /**
  * This class contains some utility helper methods
