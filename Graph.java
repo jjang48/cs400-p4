@@ -1,4 +1,6 @@
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 ///////////////////////////////// FILE HEADER //////////////////////////////////
 //
@@ -41,47 +43,14 @@ import java.util.Set;
  */
 public class Graph<E> implements GraphADT<E> {
 
-    protected class GraphVertex<T> {
-        final T data;
-        Set<GraphVertex<T>> adjacentVertices;
-
-        public GraphVertex(T item) {
-            if (item == null) {
-                throw new IllegalArgumentException();
-            }
-            data = item;
-            adjacentVertices = new HashSet<GraphVertex<T>>();
-        }
-
-
-        @SuppressWarnings("rawtypes")
-        @Override
-        public boolean equals(Object otherVertex) {
-            if (otherVertex == null) {
-                return false;
-            }
-
-            if (this.getClass() != otherVertex.getClass()) {
-                return false;
-            }
-
-            return this.data.equals(((GraphVertex) otherVertex).data);
-        }
-
-        @Override
-        public int hashCode() {
-            return data.hashCode();
-        }
-    }
-
     /**
      * Instance variables and constructors
      */
 
-    private Set<GraphVertex<E>> vertices;
+    private Map<E, HashSet<E>> vertices;
 
     public Graph() {
-        vertices = new HashSet<GraphVertex<E>>();
+        vertices = new HashMap<E, HashSet<E>>();
     }
 
     /**
@@ -89,10 +58,8 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public E addVertex(E vertex) {
-
         if (vertex != null) {
-            GraphVertex<E> newVertex = new GraphVertex<E>(vertex);
-            if (vertices.add(newVertex)) {
+            if (vertices.putIfAbsent(vertex, new HashSet<E>()) == null) {
                 return vertex;
             }
         }
@@ -105,6 +72,19 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public E removeVertex(E vertex) {
+        if (vertex != null) {
+            if (vertices.remove(vertex) != null) {
+                for (Set<E> adjList : vertices.values()) {
+                    for (E v : adjList) {
+                        if (vertex.equals(v)) {
+                            adjList.remove(v);
+                            break;
+                        }
+                    }
+                }
+                return vertex;
+            }
+        }
         return null;
     }
 
@@ -113,6 +93,15 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean addEdge(E vertex1, E vertex2) {
+        if (vertices.containsKey(vertex1) && vertices.containsKey(vertex2)) {
+            // note we know here that vertex1 and vertex2 are both not null
+            if (!vertex1.equals(vertex2)) {
+                if (vertices.get(vertex1).add(vertex2)) {
+                    vertices.get(vertex2).add(vertex1);
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -121,6 +110,15 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean removeEdge(E vertex1, E vertex2) {
+        if (vertices.containsKey(vertex1) && vertices.containsKey(vertex2)) {
+            // note we know here that vertex1 and vertex2 are both not null
+            if (!vertex1.equals(vertex2)) {
+                if (vertices.get(vertex1).remove(vertex2)) {
+                    vertices.get(vertex2).remove(vertex1);
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -129,6 +127,14 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public boolean isAdjacent(E vertex1, E vertex2) {
+        if (vertices.containsKey(vertex1) && vertices.containsKey(vertex2)) {
+            // note we know here that vertex1 and vertex2 are both not null
+            if (!vertex1.equals(vertex2)) {
+                if (vertices.get(vertex1).contains(vertex2)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -137,7 +143,11 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getNeighbors(E vertex) {
-        return null;
+        if (vertex == null || !vertices.containsKey(vertex)) {
+            throw new IllegalArgumentException();
+        }
+
+        return vertices.get(vertex);
     }
 
     /**
@@ -145,11 +155,7 @@ public class Graph<E> implements GraphADT<E> {
      */
     @Override
     public Iterable<E> getAllVertices() {
-        Set<E> allData = new HashSet<E>();
-        for (GraphVertex<E> v : vertices) {
-            allData.add(v.data);
-        }
-        return allData;
+        return vertices.keySet();
     }
 
 
