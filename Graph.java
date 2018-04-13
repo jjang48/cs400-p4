@@ -17,6 +17,8 @@ import java.util.Set;
 //
 // Lecturer's Name: Deb Deppeler
 //
+// Outside sources: NONE
+//
 // Known bugs: NONE
 //
 // Due date: 4/16/2018
