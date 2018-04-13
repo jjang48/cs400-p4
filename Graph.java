@@ -17,16 +17,6 @@ import java.util.Set;
 //
 // Lecturer's Name: Deb Deppeler
 //
-// Outside sources:
-// https://www.sitepoint.com/implement-javas-equals-method-correctly/ for help
-// implementing equals method of GraphVertex properly (I had forgotten that I
-// could use getClass() to safely cast the Object parameter).
-//
-// https://coderanch.com/t/572755/certification/
-// HashSet-adding-duplicates-hashcode-obects
-// for helping me realize that I needed to override the hashCode() method for
-// GraphVertex in order to properly use HashSet.
-//
 // Known bugs: NONE
 //
 // Due date: 4/16/2018
