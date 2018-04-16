@@ -72,7 +72,7 @@ public class GraphProcessor {
     String currFileName;
     ArrayList<String> vertexData;
     Integer[][] dist;
-    Integer[][] next;
+    int[][] next;
 
     /**
      * Graph which stores the dictionary words and their associated connections
@@ -200,7 +200,7 @@ public class GraphProcessor {
      * Again, the assumption is that this method will be called after a any material
      * change to the graph
      */
-        public void shortestPathPrecomputation() {
+    public void shortestPathPrecomputation() {
 
         int i = 0;
         int j = 0;
@@ -267,6 +267,7 @@ public class GraphProcessor {
         
         
     }
+
     /*
      * This method is a helper method to take the contents from the given file parse
      * individual vertices and add them to our given Graph.
@@ -302,7 +303,7 @@ public class GraphProcessor {
         for (String vertex1 : graph.getAllVertices()) {
             for (String vertex2 : graph.getAllVertices()) {
                 if (!vertex1.equals(vertex2)) {
-                    if (isSatisfactory(vertex1, vertex2)) {
+                    if (WordProcessor.isAdjacent(vertex1, vertex2)) {
                         graph.addEdge(vertex1, vertex2);
                     }
                 }
@@ -412,4 +413,7 @@ public class GraphProcessor {
         // return number of differing character from the two words
         return count;
     }
+    
 }
+
+    
