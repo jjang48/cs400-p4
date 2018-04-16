@@ -284,11 +284,17 @@ public class GraphProcessor {
         Integer counter = 0;
 
         // Opens the given test file and stores the objects each line as a string
-        Stream<String> stream = WordProcessor.getWordStream(filename);
+        BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
 
-        // add each object from Stream (treating them as individual Strings) to an
-        // ArrayList
-        vertexData = stream.collect(Collectors.toList());
+        // add each line (treating them as individual Strings) to an ArrayList
+        vertexData = new ArrayList<String>();
+        String line = br.readLine();
+        while (line != null) {
+            vertexData.add(line);
+            line = br.readLine();
+        }
+        // close file once we are done with it
+        br.close();
 
         // adding words taken from given file into graph
         for (String word : vertexData) {
