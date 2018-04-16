@@ -214,6 +214,7 @@ public class GraphProcessor {
         
         // set size for our distance matrix
         dist = new Integer[vertexData.size()][vertexData.size()];
+        next = new Integer[vertexData.size()][vertexData.size()];
         
         // initialize minimum distances to MAX_VALUE (pseudo-infinity)
         for(int s = 0; s < vertexData.size(); s++) {
