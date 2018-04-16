@@ -139,7 +139,7 @@ public class GraphProcessor {
         String w2 = word2;
 
         // sanity check to see if both words are part of graph
-        if (vertexData.contains(w1) && vertexData.contains(w2)) {
+        if (!(vertexData.contains(w1) && vertexData.contains(w2))) {
             return null;
         }
 
