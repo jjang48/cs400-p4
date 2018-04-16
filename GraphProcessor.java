@@ -73,6 +73,7 @@ public class GraphProcessor {
     ArrayList<String> vertexData;
     Integer[][] dist;
     int[][] next;
+    ArrayList<String> outputPath;
 
     /**
      * Graph which stores the dictionary words and their associated connections
@@ -134,32 +135,46 @@ public class GraphProcessor {
      */
     public List<String> getShortestPath(String word1, String word2) {
 
-        ArrayList<String> outputPath = new ArrayList<String>();
+        
         String w1 = word1;
         String w2 = word2;
-
-        // sanity check to see if both words are part of graph
-        if (!(vertexData.contains(w1) && vertexData.contains(w2))) {
-            return null;
-        }
-
-        else if (dist[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == Integer.MAX_VALUE) {
-            return null;
-        }
-
-        else if (w1.equals(w2)) {
-            outputPath.add(w1);
-            return outputPath;
-        }
-
-        while (!w1.equals(w2)) {
-            outputPath.add(w1);
-            w1 = vertexData.get(next[vertexData.indexOf(w1)][vertexData.indexOf(w2)]);
-        }
         
-        outputPath.add(w2);
+        outputPath = new ArrayList<String>();
+        
+        
+        getShortestPathHelper(w1, w2);
+        
         return outputPath;
 
+    }
+    
+    private void getShortestPathHelper(String word1, String word2) {
+        String w1 = word1;
+        String w2 = word2;
+        
+        // sanity check to see if both words are part of graph
+        if (!(vertexData.contains(w1) && vertexData.contains(w2))) {
+            
+        }
+        // check if there is a connection between the to words
+        else if (dist[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == Integer.MAX_VALUE) {
+            
+        }
+        // check if we are comparing identical words (base case of recursion)
+        else if (w1.equals(w2)) {
+            outputPath.add(w1);
+            
+        }
+        // next matrix shows 0, ie there is no connection (no more valid predecessors)
+        else if(next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == 0) {
+            
+        }
+        
+        else {
+            getShortestPath(w1, vertexData.get(next[vertexData.indexOf(w1)][vertexData.indexOf(w2)]));
+            outputPath.add(w2);
+        }
+        
     }
 
     /**
@@ -415,5 +430,3 @@ public class GraphProcessor {
     }
     
 }
-
-    
