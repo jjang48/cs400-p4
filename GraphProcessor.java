@@ -284,7 +284,6 @@ public class GraphProcessor {
         Integer counter = 0;
 
         // Opens the given test file and stores the objects each line as a string
-        BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
         Stream<String> stream = WordProcessor.getWordStream(filename);
 
         // add each object from Stream (treating them as individual Strings) to an
