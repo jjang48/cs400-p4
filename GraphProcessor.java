@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -6,6 +9,30 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+import java.util.HashSet;
+
+///////////////////////////////// FILE HEADER //////////////////////////////////
+//
+//Assignment name: DictionaryGraph
+//
+//Files submitted: Graph.java, GraphTest.java, WordProcessor.java,
+//GraphProcessor.java, GraphProcessorTest.java
+//
+//Course: CS 400 Spring 2018
+//
+//Authors: Bryan Jin, Joon Jang, Aanjanaye Kajaria
+//
+//Emails: bjin23@wisc.edu, jjang48@wisc.edu, kajaria@wisc.edu
+//
+//Lecturer's Name: Deb Deppeler
+//
+//Outside sources: NONE
+//
+//Known bugs: NONE
+//
+//Due date: 4/16/2018
+/////////////////////////////// 80 COLUMNS WIDE ///////////////////////////////
+
 
 /**
  * This class adds additional functionality to the graph as a whole.
@@ -37,10 +64,17 @@ import java.util.stream.Stream;
  */
 public class GraphProcessor {
 
+    
+    String currFileName;
+    ArrayList<String> vertexData;
+    int[][] dist;
+    int[][] next;
+    int size = 0;
+    
     /**
      * Graph which stores the dictionary words and their associated connections
      */
-    private GraphADT<String> graph;
+    private Graph<String> graph;
 
     /**
      * Constructor for this class. Initializes instances variables to set the starting state of the object
@@ -64,8 +98,20 @@ public class GraphProcessor {
      * @return Integer the number of vertices (words) added
      */
     public Integer populateGraph(String filepath) {
-        return 0;
-    
+        // takes in the particular data file name
+        currFileName = filepath;
+        Integer count = 0;
+        // load the data into an appropriately instantiated ArrayList of keyvals
+        try {
+            count = loadData(currFileName);
+        } catch (IOException e) {
+            // output error message stating problem details
+            System.out.println("IOException thrown from loading data.");
+            // Note on canvas said to return -1 if Exceptions are encountered
+            return -1;
+        }
+        
+        return count;
     }
 
     
@@ -87,10 +133,34 @@ public class GraphProcessor {
      * @return List<String> list of the words
      */
     public List<String> getShortestPath(String word1, String word2) {
-        return null;
+        
+        ArrayList<String> outputPath = new ArrayList<String>();
+        String w1 = word1;
+        String w2 = word2;
+        
+        // sanity check to see if both words are part of graph
+        if(vertexData.contains(w1) && vertexData.contains(w2)) {
+            return null;
+        }
+        
+        else if(dist[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == Integer.MAX_VALUE) {
+            return null;
+        }
+        
+        else if (w1.equals(w2)) {
+            outputPath.add(w1);
+            return outputPath;
+        }
+
+        while (!w1.equals(w2)) {
+            outputPath.add(w1);
+            w1 = vertexData.get(next[vertexData.indexOf(w1)][vertexData.indexOf(w2)]);
+        }
+        
+        return outputPath;
     
     }
-    
+
     /**
      * Gets the distance of the shortest path between word1 and word2
      * 
@@ -109,6 +179,18 @@ public class GraphProcessor {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
+        
+        int w1Index;
+        int w2Index;
+        
+        if (vertexData.contains(word1) && vertexData.contains(word2)) {
+            w1Index = vertexData.indexOf(word1);
+            w2Index = vertexData.indexOf(word2);
+            
+            return dist[w1Index][w2Index];
+            
+        }
+
         return null;
     }
     
@@ -116,8 +198,210 @@ public class GraphProcessor {
      * Computes shortest paths and distances between all possible pairs of vertices.
      * This method is called after every set of updates in the graph to recompute the path information.
      * Any shortest path algorithm can be used (Djikstra's or Floyd-Warshall recommended).
+     * 
+     * Again, the assumption is that this method will be called after a any material change to the graph
      */
     public void shortestPathPrecomputation() {
     
+        int i = -1;
+        int j = -1;
+        
+        vertexData = new ArrayList<String>();
+        
+        for(String vertex : graph.getAllVertices()) {
+            vertexData.add(vertex);
+        }
+        
+        
+        // iterate through all possible vertex1, vertex2 possibilities
+        for(String vertex1 : vertexData) {
+            i++;
+            for(String vertex2: vertexData) {
+                j++;
+                
+                // if vertex1 and vertex2 have an edge between them, mark to dist
+                if(graph.isAdjacent(vertex1, vertex2)) {
+                    dist[i][j] = 1;
+                    next[i][j] = j;
+                    
+                    dist[j][i] = 1;
+                    next[j][i] = i;
+                    
+                }
+                else {
+                    dist[i][j] = Integer.MAX_VALUE;
+                    next[i][j] = Integer.MIN_VALUE;
+                    
+                    dist[j][i] = Integer.MAX_VALUE;
+                    next[j][i] = Integer.MIN_VALUE;
+                }
+            }
+            j = -1;
+        }
+        
+        // fill out rest of dist matrix by Floyd-Warshall method
+        for(int a = 0; a < size; a++) {
+            for(int b = 0; b < size; b++) {
+                for(int c = 0; c< size; c++) {
+                    if(dist[b][c] > dist[b][a] + dist[a][c]) {
+                        dist[b][c] = dist[b][a] + dist[a][c];
+                        next[b][c] = next[b][a];
+                    }
+                }
+            }
+        }
+    }
+    
+    
+    /*
+     * This method is a helper method to take the contents from the given file
+     * parse individual vertices and add them to our given Graph.
+     * 
+     * @return returns number of vertices added to graph
+     */
+    private Integer loadData(String filename) throws IOException {
+        
+        Integer counter = 0;
+        
+        // Opens the given test file and stores the objects each line as a string
+        BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
+
+        // add each line (treating them as individual Strings) to an ArrayList
+        vertexData = new ArrayList<String>();
+        String line = br.readLine();
+        while (line != null) {
+            vertexData.add(line);
+            line = br.readLine();
+        }
+        // close file once we are done with it
+        br.close();
+        
+        // adding words taken from given file into graph
+        for(String word : vertexData) {
+            // for each unique (and non-null) vertex added, iterate counter
+            if (graph.addVertex(word) != null) {
+                counter++;
+            }
+        }
+        
+        // check for possible edges between all words in graph
+        for (String vertex1 : graph.getAllVertices()) {
+            for(String vertex2: graph.getAllVertices()) {
+                if (!vertex1.equals(vertex2)) {
+                    if (isSatisfactory(vertex1, vertex2)) {
+                        graph.addEdge(vertex1, vertex2);
+                    }
+                }
+            }
+        }
+        
+        // set size (number of words) in our graph
+        size = counter;
+        
+        // set size for our distance matrix
+        dist = new int[size][size];
+        
+        // generate edge adjacency matrix between each individual word
+        shortestPathPrecomputation();
+        
+        // return the number of vertices added
+        return counter;
+    }
+        
+    /*
+     * This method checks whether two words given to the parameters satisfy
+     * the conditions of addition/deletion or 1-char substitution to merit 
+     * establishing an edge between the two words
+     */
+    private boolean isSatisfactory(String word1, String word2) {
+        
+        String w1 = word1;
+        String w2 = word2;
+        int count = 0;
+        
+        int len1 = w1.length();
+        int len2 = w2.length();
+        
+        // take words to char array
+        char[] c1 = w1.toCharArray();
+        char[] c2 = w2.toCharArray();
+        
+        // if same length we check for substitution case
+        if (len1 == len2) {
+            
+            return (numDiffChar(w1, w2) == 1);
+            
+        }
+        // else we check if for addition/deletion of 1 char
+        else {
+            int index = 0;
+            
+            if (len1 == len2 + 1) {
+                for(int i = 0; i < len2; i++) {
+                    if (!(c1[i] == c2[i])) {
+                        index = i;
+                        break;
+                    }
+                }
+                
+                // remove the differing character from longer word
+                w1 = w1.substring(0, index) + w1.substring(index+1);
+                
+                // want to check if the Strings are now the same
+                return (numDiffChar(w1, w2) == 0);
+                
+            }
+            else if (len1 == len2 - 1) {
+                for(int i = 0; i < len1; i++) {
+                    if (!(c1[i] == c2[i])) {
+                        index = i;
+                        break;
+                    }
+                }
+                
+                // remove the differing character from longer word
+                w2 = w2.substring(0, index) + w2.substring(index+1);
+                
+                // want to check if the Strings are now the same
+                return (numDiffChar(w1, w2) == 0);
+            }
+            
+        }
+        return false;
+    }
+    
+    /**
+     * This method returns the number of different characters between two
+     * Strings of equal length
+     * 
+     * @param word1
+     * @param word2
+     * @return number of characters differing
+     */
+    private int numDiffChar(String word1, String word2) {
+        
+        // sanity check
+        if (word1.length() != word2.length()) return -1;
+        
+        String w1 = word1;
+        String w2 = word2;
+        int count = 0;
+        
+        int len1 = w1.length();
+        int len2 = w2.length();
+        
+        // take words to char array
+        char[] c1 = w1.toCharArray();
+        char[] c2 = w2.toCharArray();
+        
+        // iterate over the char arrays
+        for (int i = 0; i < len1; i++) {
+            // count how many characters are different
+            if (!(c1[i] == c2[i])) {
+                count++;
+            }
+        }
+        // return number of differing character from the two words
+        return count;
     }
 }
