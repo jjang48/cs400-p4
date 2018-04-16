@@ -70,7 +70,7 @@ import java.util.HashSet;
 public class GraphProcessor {
 
     String currFileName;
-    ArrayList<String> vertexData;
+    List<String> vertexData;
     Integer[][] dist;
     int[][] next;
     ArrayList<String> outputPath;
