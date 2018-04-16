@@ -157,7 +157,8 @@ public class GraphProcessor {
             outputPath.add(w1);
             w1 = vertexData.get(next[vertexData.indexOf(w1)][vertexData.indexOf(w2)]);
         }
-
+        
+        outputPath.add(w2);
         return outputPath;
 
     }
