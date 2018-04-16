@@ -1,4 +1,6 @@
 import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -39,7 +41,24 @@ public class GraphProcessorTest {
     @Test
     public final void populateGraphShouldReturnNumberOfVerticesAdded() {
         int numVertices = gp.populateGraph("TestFile.txt");
-        assertEquals("number of vertices added", 441, numVertices);
+        assertEquals("number of vertices added", 427, numVertices);
+    }
+
+    @Test
+    public final void getShortestPathOnAdjacentVertices() {
+        gp.populateGraph("TestFile.txt");
+        List<String> path = gp.getShortestPath("bullies", "bellies");
+        List<String> correctPath = new ArrayList<String>();
+        correctPath.add("bullies");
+        correctPath.add("bellies");
+        assertEquals("path between bullies and bellies:", correctPath, path);
+    }
+
+    @Test
+    public final void getShortestDistanceOnAdjacentVertices() {
+        gp.populateGraph("TestFile.txt");
+        Integer distance = gp.getShortestDistance("bullies", "bellies");
+        assertEquals("path between bullies and bellies:", new Integer(1), distance);
     }
 
 }
