@@ -135,46 +135,44 @@ public class GraphProcessor {
      */
     public List<String> getShortestPath(String word1, String word2) {
 
-        
         String w1 = word1;
         String w2 = word2;
-        
+
         outputPath = new ArrayList<String>();
-        
-        
+
         getShortestPathHelper(w1, w2);
-        
+
         return outputPath;
 
     }
-    
+
     private void getShortestPathHelper(String word1, String word2) {
         String w1 = word1;
         String w2 = word2;
-        
+
         // sanity check to see if both words are part of graph
         if (!(vertexData.contains(w1) && vertexData.contains(w2))) {
-            
+
         }
         // check if there is a connection between the to words
         else if (dist[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == Integer.MAX_VALUE) {
-            
+
         }
         // check if we are comparing identical words (base case of recursion)
         else if (w1.equals(w2)) {
             outputPath.add(w1);
-            
+
         }
         // next matrix shows 0, ie there is no connection (no more valid predecessors)
-        else if(next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == 0) {
-            
+        else if (next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == 0) {
+
         }
-        
+
         else {
             getShortestPath(w1, vertexData.get(next[vertexData.indexOf(w1)][vertexData.indexOf(w2)]));
             outputPath.add(w2);
         }
-        
+
     }
 
     /**
@@ -219,26 +217,23 @@ public class GraphProcessor {
 
         int i = 0;
         int j = 0;
-        
+
         vertexData = new ArrayList<String>();
 
         for (String vertex : graph.getAllVertices()) {
             vertexData.add(vertex);
         }
-        
-        
+
         // set size for our distance matrix
         dist = new Integer[vertexData.size()][vertexData.size()];
         next = new int[vertexData.size()][vertexData.size()];
-        
+
         // initialize minimum distances to MAX_VALUE (pseudo-infinity)
-        for(int s = 0; s < vertexData.size(); s++) {
+        for (int s = 0; s < vertexData.size(); s++) {
             for (int t = 0; t < vertexData.size(); t++) {
                 dist[s][t] = Integer.MAX_VALUE;
             }
         }
-        
-        
 
         // iterate through all possible vertex1, vertex2 possibilities
         for (String vertex1 : vertexData) {
@@ -248,7 +243,7 @@ public class GraphProcessor {
                 // if vertex1 and vertex2 have an edge between them, mark to dist
                 if (graph.isAdjacent(vertex1, vertex2)) {
                     dist[i][j] = 1;
-                } 
+                }
             }
         }
 
@@ -257,18 +252,15 @@ public class GraphProcessor {
             for (int b = 0; b < vertexData.size(); b++) {
                 for (int c = 0; c < vertexData.size(); c++) {
                     if (dist[b][a] == Integer.MAX_VALUE || dist[a][c] == Integer.MAX_VALUE) {
-                        
-                    }
-                    else if (dist[b][c] > dist[b][a] + dist[a][c]) {
+
+                    } else if (dist[b][c] > dist[b][a] + dist[a][c]) {
                         dist[b][c] = dist[b][a] + dist[a][c];
                     }
                 }
             }
         }
-        
-        
-        
-        // alternate way to set up next[][]
+
+        // creating the predecessor matrix (also part of Floyd-Worshall)
         for (i = 0; i < dist.length; i++) {
             for (j = 0; j < dist.length; j++) {
                 if (dist[i][j] != 0 && dist[i][j] != Integer.MAX_VALUE) {
@@ -278,9 +270,7 @@ public class GraphProcessor {
                 }
             }
         }
-        
-        
-        
+
     }
 
     /*
@@ -295,16 +285,11 @@ public class GraphProcessor {
 
         // Opens the given test file and stores the objects each line as a string
         BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
+        Stream<String> stream = WordProcessor.getWordStream(filename);
 
-        // add each line (treating them as individual Strings) to an ArrayList
-        vertexData = new ArrayList<String>();
-        String line = br.readLine();
-        while (line != null) {
-            vertexData.add(line);
-            line = br.readLine();
-        }
-        // close file once we are done with it
-        br.close();
+        // add each object from Stream (treating them as individual Strings) to an
+        // ArrayList
+        vertexData = stream.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
 
         // adding words taken from given file into graph
         for (String word : vertexData) {
@@ -331,102 +316,4 @@ public class GraphProcessor {
         // return the number of vertices added
         return counter;
     }
-
-    /*
-     * This method checks whether two words given to the parameters satisfy the
-     * conditions of addition/deletion or 1-char substitution to merit establishing
-     * an edge between the two words
-     */
-    private boolean isSatisfactory(String word1, String word2) {
-
-        String w1 = word1;
-        String w2 = word2;
-        int count = 0;
-
-        int len1 = w1.length();
-        int len2 = w2.length();
-
-        // take words to char array
-        char[] c1 = w1.toCharArray();
-        char[] c2 = w2.toCharArray();
-
-        // if same length we check for substitution case
-        if (len1 == len2) {
-
-            return (numDiffChar(w1, w2) == 1);
-
-        }
-        // else we check if for addition/deletion of 1 char
-        else {
-            int index = 0;
-
-            if (len1 == len2 + 1) {
-                for (int i = 0; i < len2; i++) {
-                    if (!(c1[i] == c2[i])) {
-                        index = i;
-                        break;
-                    }
-                }
-
-                // remove the differing character from longer word
-                w1 = w1.substring(0, index) + w1.substring(index + 1);
-
-                // want to check if the Strings are now the same
-                return (numDiffChar(w1, w2) == 0);
-
-            } else if (len1 == len2 - 1) {
-                for (int i = 0; i < len1; i++) {
-                    if (!(c1[i] == c2[i])) {
-                        index = i;
-                        break;
-                    }
-                }
-
-                // remove the differing character from longer word
-                w2 = w2.substring(0, index) + w2.substring(index + 1);
-
-                // want to check if the Strings are now the same
-                return (numDiffChar(w1, w2) == 0);
-            }
-
-        }
-        return false;
-    }
-
-    /**
-     * This method returns the number of different characters between two Strings of
-     * equal length
-     * 
-     * @param word1
-     * @param word2
-     * @return number of characters differing
-     */
-    private int numDiffChar(String word1, String word2) {
-
-        // sanity check
-        if (word1.length() != word2.length())
-            return -1;
-
-        String w1 = word1;
-        String w2 = word2;
-        int count = 0;
-
-        int len1 = w1.length();
-        int len2 = w2.length();
-
-        // take words to char array
-        char[] c1 = w1.toCharArray();
-        char[] c2 = w2.toCharArray();
-
-        // iterate over the char arrays
-        for (int i = 0; i < len1; i++) {
-            // count how many characters are different
-            if (!(c1[i] == c2[i])) {
-                count++;
-            }
-        }
-        // return number of differing character from the two words
-        return count;
-    }
-    
 }
