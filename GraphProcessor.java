@@ -274,7 +274,7 @@ public class GraphProcessor {
                 if (dist[i][j] != 0 && dist[i][j] != Integer.MAX_VALUE) {
                     next[i][j] = i;
                 } else {
-                    next[i][j] = -1;
+                    next[i][j] = 0;
                 }
             }
         }
