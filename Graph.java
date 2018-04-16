@@ -30,7 +30,8 @@ import java.util.Set;
  * 
  * @param <E> type of a vertex
  * 
- * @author sapan (sapan@cs.wisc.edu)
+ * @author sapan (sapan@cs.wisc.edu), Bryan Jin (bjin23@wisc.edu), Joon Jang (jjang48@wisc.edu),
+ *         Aanjanaye Kajaria (kajaria@wisc.edu)
  * 
  */
 public class Graph<E> implements GraphADT<E> {
