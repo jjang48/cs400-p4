@@ -200,7 +200,7 @@ public class GraphProcessor {
      * Again, the assumption is that this method will be called after a any material
      * change to the graph
      */
-    public void shortestPathPrecomputation() {
+        public void shortestPathPrecomputation() {
 
         int i = 0;
         int j = 0;
@@ -214,7 +214,7 @@ public class GraphProcessor {
         
         // set size for our distance matrix
         dist = new Integer[vertexData.size()][vertexData.size()];
-        next = new Integer[vertexData.size()][vertexData.size()];
+        next = new int[vertexData.size()][vertexData.size()];
         
         // initialize minimum distances to MAX_VALUE (pseudo-infinity)
         for(int s = 0; s < vertexData.size(); s++) {
@@ -233,7 +233,6 @@ public class GraphProcessor {
                 // if vertex1 and vertex2 have an edge between them, mark to dist
                 if (graph.isAdjacent(vertex1, vertex2)) {
                     dist[i][j] = 1;
-                    next[i][j] = j;
                 } 
             }
         }
@@ -242,15 +241,32 @@ public class GraphProcessor {
         for (int a = 0; a < vertexData.size(); a++) {
             for (int b = 0; b < vertexData.size(); b++) {
                 for (int c = 0; c < vertexData.size(); c++) {
-                    if (dist[b][c] > dist[b][a] + dist[a][c]) {
+                    if (dist[b][a] == Integer.MAX_VALUE || dist[a][c] == Integer.MAX_VALUE) {
+                        
+                    }
+                    else if (dist[b][c] > dist[b][a] + dist[a][c]) {
                         dist[b][c] = dist[b][a] + dist[a][c];
-                        next[b][c] = next[b][a];
                     }
                 }
             }
         }
+        
+        
+        
+        // alternate way to set up next[][]
+        for (i = 0; i < dist.length; i++) {
+            for (j = 0; j < dist.length; j++) {
+                if (dist[i][j] != 0 && dist[i][j] != Integer.MAX_VALUE) {
+                    next[i][j] = i;
+                } else {
+                    next[i][j] = -1;
+                }
+            }
+        }
+        
+        
+        
     }
-
     /*
      * This method is a helper method to take the contents from the given file parse
      * individual vertices and add them to our given Graph.
