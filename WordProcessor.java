@@ -27,7 +27,8 @@ import java.util.stream.Stream;
 /**
  * This class contains some utility helper methods
  * 
- * @author sapan (sapan@cs.wisc.edu)
+ * @author sapan (sapan@cs.wisc.edu), Bryan Jin, Joon Jang, Aanjanaye Kajaria (bjin23@wisc.edu,
+ *         jjang48@wisc.edu, kajaria@wisc.edu)
  */
 public class WordProcessor {
 
