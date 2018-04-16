@@ -71,9 +71,8 @@ public class GraphProcessor {
 
     String currFileName;
     ArrayList<String> vertexData;
-    int[][] dist;
-    int[][] next;
-    int size = 0;
+    Integer[][] dist;
+    Integer[][] next;
 
     /**
      * Graph which stores the dictionary words and their associated connections
@@ -203,44 +202,45 @@ public class GraphProcessor {
      */
     public void shortestPathPrecomputation() {
 
-        int i = -1;
-        int j = -1;
-
+        int i = 0;
+        int j = 0;
+        
         vertexData = new ArrayList<String>();
 
         for (String vertex : graph.getAllVertices()) {
             vertexData.add(vertex);
         }
+        
+        
+        // set size for our distance matrix
+        dist = new Integer[vertexData.size()][vertexData.size()];
+        
+        // initialize minimum distances to MAX_VALUE (pseudo-infinity)
+        for(int s = 0; s < vertexData.size(); s++) {
+            for (int t = 0; t < vertexData.size(); t++) {
+                dist[s][t] = Integer.MAX_VALUE;
+            }
+        }
+        
+        
 
         // iterate through all possible vertex1, vertex2 possibilities
         for (String vertex1 : vertexData) {
-            i++;
+            i = vertexData.indexOf(vertex1);
             for (String vertex2 : vertexData) {
-                j++;
-
+                j = vertexData.indexOf(vertex2);
                 // if vertex1 and vertex2 have an edge between them, mark to dist
                 if (graph.isAdjacent(vertex1, vertex2)) {
                     dist[i][j] = 1;
                     next[i][j] = j;
-
-                    dist[j][i] = 1;
-                    next[j][i] = i;
-
-                } else {
-                    dist[i][j] = Integer.MAX_VALUE;
-                    next[i][j] = Integer.MIN_VALUE;
-
-                    dist[j][i] = Integer.MAX_VALUE;
-                    next[j][i] = Integer.MIN_VALUE;
-                }
+                } 
             }
-            j = -1;
         }
 
         // fill out rest of dist matrix by Floyd-Warshall method
-        for (int a = 0; a < size; a++) {
-            for (int b = 0; b < size; b++) {
-                for (int c = 0; c < size; c++) {
+        for (int a = 0; a < vertexData.size(); a++) {
+            for (int b = 0; b < vertexData.size(); b++) {
+                for (int c = 0; c < vertexData.size(); c++) {
                     if (dist[b][c] > dist[b][a] + dist[a][c]) {
                         dist[b][c] = dist[b][a] + dist[a][c];
                         next[b][c] = next[b][a];
@@ -291,12 +291,6 @@ public class GraphProcessor {
                 }
             }
         }
-
-        // set size (number of words) in our graph
-        size = counter;
-
-        // set size for our distance matrix
-        dist = new int[size][size];
 
         // generate edge adjacency matrix between each individual word
         shortestPathPrecomputation();
