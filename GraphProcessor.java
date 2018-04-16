@@ -288,7 +288,7 @@ public class GraphProcessor {
 
         // add each object from Stream (treating them as individual Strings) to an
         // ArrayList
-        vertexData = stream.collect(ArrayList::new, ArrayList::add, ArrayList::addAll);
+        vertexData = stream.collect(Collectors.toList());
 
         // adding words taken from given file into graph
         for (String word : vertexData) {
