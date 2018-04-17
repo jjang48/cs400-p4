@@ -150,9 +150,8 @@ public class GraphProcessor {
 
     private void getShortestPathHelper(String word1, String word2) {
         
-        // convert query Strings into uppercase as graph has only uppercase
-        String w1 = word1.toUpperCase();
-        String w2 = word2.toUpperCase();
+        String w1 = word1;
+        String w2 = word2;
 
         // sanity check to see if both words are part of graph
         if (!(vertexData.contains(w1) && vertexData.contains(w2))) {
@@ -193,13 +192,15 @@ public class GraphProcessor {
      * @return Integer distance
      */
     public Integer getShortestDistance(String word1, String word2) {
-
+        
+        String w1 = word1.toUpperCase();
+        String w2 = word2.toUpperCase();
         int w1Index;
         int w2Index;
 
-        if (vertexData.contains(word1) && vertexData.contains(word2)) {
-            w1Index = vertexData.indexOf(word1);
-            w2Index = vertexData.indexOf(word2);
+        if (vertexData.contains(w1) && vertexData.contains(w2)) {
+            w1Index = vertexData.indexOf(w1);
+            w2Index = vertexData.indexOf(w2);
 
             return dist[w1Index][w2Index];
 
