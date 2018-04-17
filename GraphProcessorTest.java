@@ -87,4 +87,48 @@ public class GraphProcessorTest {
     		Integer distance = gp.getShortestDistance("bath", "bath");
     		assertEquals("path between bath and bath:", new Integer(-1), distance);
     }
+    @Test
+    public final void getShortestPathOnVertices()
+    {
+    		gp.populateGraph("TextFile2");
+    		List<String> path = gp.getShortestPath("neat", "wheat");
+    		List<String> correctPath = new ArrayList<String>();
+    		correctPath.add("neat");
+    		correctPath.add("heat");
+    		correctPath.add("wheat");
+    		assertEquals("path between neat and wheat: ", correctPath, path);
+    }
+    
+    @Test
+    public final void getShortestDistanceOnVertices()
+    {
+    	gp.populateGraph("TestFile.txt");
+    	Integer distance = gp.getShortestDistance("comedo", "charge");
+    	assertEquals("path between comedo and charge:", new Integer(49), distance);
+    }
+    
+    @Test
+    public final void getDistanceOnItself()
+    {
+    		gp.populateGraph("TestFile.txt");
+    		Integer distance = gp.getShortestDistance("bath", "bath");
+    		assertEquals("path between bath and bath:", new Integer(-1), distance);
+    }
+    
+    @Test 
+    public final void getPathOnVerticesThatAreNotConnected()
+    {
+    		gp.populateGraph("TextFile2");
+    		List<String> path = gp.getShortestPath("hot", "husband");
+    		List<String> correctPath = new ArrayList<>();
+    		assertEquals("path between hot and husband: ", correctPath, path);
+    }
+    
+    @Test
+    public final void getDistanceOnVerticesThatAreNotConnected()
+    {
+    		gp.populateGraph("TextFile2");
+    		Integer distance = gp.getShortestDistance("hot", "husband");
+    		assertEquals("distance between hot and husband: ", Integer.MAX_VALUE, distance);
+    }
 }
