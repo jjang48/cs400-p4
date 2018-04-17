@@ -264,6 +264,7 @@ public class GraphProcessor {
                         continue;
                     } else if (dist[b][c] > dist[b][a] + dist[a][c]) {
                         dist[b][c] = dist[b][a] + dist[a][c];
+                        next[b][c] = next[a][c];
                     }
                 }
             }
