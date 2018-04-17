@@ -256,6 +256,17 @@ public class GraphProcessor {
             }
         }
 
+        // creating the predecessor matrix (part of Floyd-Worshall)
+        for (i = 0; i < dist.length; i++) {
+            for (j = 0; j < dist.length; j++) {
+                if (dist[i][j] != 0 && dist[i][j] != Integer.MAX_VALUE) {
+                    next[i][j] = i;
+                } else {
+                    next[i][j] = -1;
+                }
+            }
+        }
+        
         // fill out rest of dist matrix by Floyd-Warshall method
         for (int a = 0; a < vertexData.size(); a++) {
             for (int b = 0; b < vertexData.size(); b++) {
@@ -270,16 +281,7 @@ public class GraphProcessor {
             }
         }
 
-        // creating the predecessor matrix (also part of Floyd-Worshall)
-        for (i = 0; i < dist.length; i++) {
-            for (j = 0; j < dist.length; j++) {
-                if (dist[i][j] != 0 && dist[i][j] != Integer.MAX_VALUE) {
-                    next[i][j] = i;
-                } else {
-                    next[i][j] = -1;
-                }
-            }
-        }
+
 
     }
 
