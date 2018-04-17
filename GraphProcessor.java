@@ -19,7 +19,8 @@ import java.util.stream.Stream;
 //
 // Lecturer's Name: Deb Deppeler
 //
-// Outside sources: NONE
+// Outside sources: http://www.programming-algorithms.net/article/45708/Floyd-Warshall-algorithm
+//                  (Implementation of Floyd-Worshall algorithm with predecessor matrix)
 //
 // Known bugs: NONE
 //
