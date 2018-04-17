@@ -167,8 +167,9 @@ public class GraphProcessor {
 
         }
         // next matrix shows 0, ie there is no connection (no more valid predecessors)
-        else if (next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == 0) {
-
+        else if (next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == 0 
+                || next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == -1) {
+            
         }
 
         else {
@@ -206,7 +207,7 @@ public class GraphProcessor {
 
         }
 
-        return null;
+        return -1;
     }
 
     /**
@@ -257,7 +258,7 @@ public class GraphProcessor {
             for (int b = 0; b < vertexData.size(); b++) {
                 for (int c = 0; c < vertexData.size(); c++) {
                     if (dist[b][a] == Integer.MAX_VALUE || dist[a][c] == Integer.MAX_VALUE) {
-
+                        continue;
                     } else if (dist[b][c] > dist[b][a] + dist[a][c]) {
                         dist[b][c] = dist[b][a] + dist[a][c];
                     }
@@ -271,7 +272,7 @@ public class GraphProcessor {
                 if (dist[i][j] != 0 && dist[i][j] != Integer.MAX_VALUE) {
                     next[i][j] = i;
                 } else {
-                    next[i][j] = 0;
+                    next[i][j] = -1;
                 }
             }
         }
