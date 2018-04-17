@@ -200,6 +200,9 @@ public class GraphProcessor {
         int w2Index;
 
         if (vertexData.contains(w1) && vertexData.contains(w2)) {
+            if(w1.equals(w2)) {
+                return -1;
+            }
             w1Index = vertexData.indexOf(w1);
             w2Index = vertexData.indexOf(w2);
 
