@@ -79,7 +79,7 @@ public class GraphProcessorTest {
     @Test
     public final void getShortestPathOnVertices() {
         gp.populateGraph("TextFile2.txt");
-        List<String> path = gp.getShortestPath("neat", "wheat");
+        List<String> path = gp.getShortestPath("NEAT", "WHEAT");
         List<String> correctPath = new ArrayList<String>();
         correctPath.add("neat".toUpperCase());
         correctPath.add("heat".toUpperCase());
