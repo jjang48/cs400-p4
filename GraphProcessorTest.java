@@ -61,16 +61,6 @@ public class GraphProcessorTest {
         assertEquals("path between bullies and bellies:", new Integer(1), distance);
     }
     
-     @Test
-    public final void getShortestPathOnVertices()
-    {
-    		gp.populateGraph("TestFile.txt");
-    		List<String> path = gp.getShortestPath("comedo", "charge");
-    		List<String> correctPath = new ArrayList<String>();
-    		correctPath.add("comedo");
-    		correctPath.add("charge");
-    		assertEquals("path between comedo and charge: ", correctPath, path);
-    }
     
     @Test
     public final void getShortestDistanceOnVertices()
@@ -97,22 +87,6 @@ public class GraphProcessorTest {
     		correctPath.add("heat");
     		correctPath.add("wheat");
     		assertEquals("path between neat and wheat: ", correctPath, path);
-    }
-    
-    @Test
-    public final void getShortestDistanceOnVertices()
-    {
-    	gp.populateGraph("TestFile.txt");
-    	Integer distance = gp.getShortestDistance("comedo", "charge");
-    	assertEquals("path between comedo and charge:", new Integer(49), distance);
-    }
-    
-    @Test
-    public final void getDistanceOnItself()
-    {
-    		gp.populateGraph("TestFile.txt");
-    		Integer distance = gp.getShortestDistance("bath", "bath");
-    		assertEquals("path between bath and bath:", new Integer(-1), distance);
     }
     
     @Test 
