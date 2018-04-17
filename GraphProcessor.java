@@ -172,8 +172,7 @@ public class GraphProcessor {
 
         }
         // next matrix shows 0, ie there is no connection (no more valid predecessors)
-        else if (next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == 0 
-                || next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == -1) {
+        else if (next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == 0) {
             marker = false;
         }
 
@@ -223,7 +222,7 @@ public class GraphProcessor {
      * the path information. Any shortest path algorithm can be used (Djikstra's or
      * Floyd-Warshall recommended).
      * 
-     * Again, the assumption is that this method will be called after a any material
+     * Again, the assumption is that this method will be called after any material
      * change to the graph
      */
     public void shortestPathPrecomputation() {
@@ -241,13 +240,6 @@ public class GraphProcessor {
         dist = new Integer[vertexData.size()][vertexData.size()];
         next = new int[vertexData.size()][vertexData.size()];
 
-        // initialize minimum distances to MAX_VALUE (pseudo-infinity)
-        for (int s = 0; s < vertexData.size(); s++) {
-            for (int t = 0; t < vertexData.size(); t++) {
-                dist[s][t] = Integer.MAX_VALUE;
-            }
-        }
-
         // iterate through all possible vertex1, vertex2 possibilities
         for (String vertex1 : vertexData) {
             i = vertexData.indexOf(vertex1);
@@ -257,6 +249,11 @@ public class GraphProcessor {
                 if (graph.isAdjacent(vertex1, vertex2)) {
                     dist[i][j] = 1;
                 }
+                // if vertex1 = vertex 2 set distance to -1
+                else if(i == j) {
+                    dist[i][j] = -1;
+                }
+                else dist[i][j] = Integer.MAX_VALUE;
             }
         }
 
@@ -272,15 +269,15 @@ public class GraphProcessor {
         }
         
         // fill out rest of dist matrix by Floyd-Warshall method
-        for (int a = 0; a < vertexData.size(); a++) {
-            for (int b = 0; b < vertexData.size(); b++) {
-                for (int c = 0; c < vertexData.size(); c++) {
-                    if (dist[b][a] == Integer.MAX_VALUE || dist[a][c] == Integer.MAX_VALUE) {
+        for (int k = 0; k < vertexData.size(); k++) {
+            for (i = 0; i < vertexData.size(); i++) {
+                for (j = 0; j < vertexData.size(); j++) {
+                    if (dist[i][k] == Integer.MAX_VALUE || dist[k][j] == Integer.MAX_VALUE) {
                         continue;
                     }
-                    if (dist[b][c] > dist[b][a] + dist[a][c]) {
-                        dist[b][c] = dist[b][a] + dist[a][c];
-                        next[b][c] = next[a][c];
+                    if (dist[i][j] > dist[i][k] + dist[k][j]) {
+                        dist[i][j] = dist[i][k] + dist[k][j];
+                        next[i][j] = next[k][j];
                     }
                 }
             }
@@ -321,6 +318,7 @@ public class GraphProcessor {
                 if (!vertex1.equals(vertex2)) {
                     if (WordProcessor.isAdjacent(vertex1, vertex2)) {
                         graph.addEdge(vertex1, vertex2);
+                        System.out.println(vertex1 + " <-> " + vertex2); // test statement
                     }
                 }
             }
