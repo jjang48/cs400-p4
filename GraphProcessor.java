@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.HashSet;
+import java.util.stream.Collectors;
 
 ///////////////////////////////// FILE HEADER //////////////////////////////////
 //
@@ -135,8 +136,9 @@ public class GraphProcessor {
      */
     public List<String> getShortestPath(String word1, String word2) {
 
-        String w1 = word1;
-        String w2 = word2;
+        // convert query Strings into uppercase as graph has only uppercase
+        String w1 = word1.toUpperCase();
+        String w2 = word2.toUpperCase();
 
         outputPath = new ArrayList<String>();
 
@@ -147,8 +149,10 @@ public class GraphProcessor {
     }
 
     private void getShortestPathHelper(String word1, String word2) {
-        String w1 = word1;
-        String w2 = word2;
+        
+        // convert query Strings into uppercase as graph has only uppercase
+        String w1 = word1.toUpperCase();
+        String w2 = word2.toUpperCase();
 
         // sanity check to see if both words are part of graph
         if (!(vertexData.contains(w1) && vertexData.contains(w2))) {
@@ -284,17 +288,11 @@ public class GraphProcessor {
         Integer counter = 0;
 
         // Opens the given test file and stores the objects each line as a string
-        BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
+        Stream<String> stream = WordProcessor.getWordStream(filename);
 
-        // add each line (treating them as individual Strings) to an ArrayList
-        vertexData = new ArrayList<String>();
-        String line = br.readLine();
-        while (line != null) {
-            vertexData.add(line);
-            line = br.readLine();
-        }
-        // close file once we are done with it
-        br.close();
+        // add each object from Stream (treating them as individual Strings) to an
+        // ArrayList
+        vertexData = stream.collect(Collectors.toList());
 
         // adding words taken from given file into graph
         for (String word : vertexData) {
