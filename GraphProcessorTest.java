@@ -101,4 +101,13 @@ public class GraphProcessorTest {
         int distance = gp.getShortestDistance("hot", "husband");
         assertEquals("distance between hot and husband: ", Integer.MAX_VALUE, distance);
     }
+    
+    @Test
+    public final void getPathOnVertexOnItself()
+    {
+    		gp.populateGraph("TextFile2.txt");
+    		List<String> path = gp.getShortestPath("bath", "bath");
+        List<String> correctPath = new ArrayList<String>();
+        assertEquals("path between bath and bath: ", correctPath, path);
+    }
 }
