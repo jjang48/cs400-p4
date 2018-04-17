@@ -75,6 +75,7 @@ public class GraphProcessor {
     Integer[][] dist;
     int[][] next;
     ArrayList<String> outputPath;
+    boolean marker;
 
     /**
      * Graph which stores the dictionary words and their associated connections
@@ -139,10 +140,21 @@ public class GraphProcessor {
         // convert query Strings into uppercase as graph has only uppercase
         String w1 = word1.toUpperCase();
         String w2 = word2.toUpperCase();
-
+        
         outputPath = new ArrayList<String>();
+        
+        // sanity check to see if both words are part of graph
+        if (!(vertexData.contains(w1) && vertexData.contains(w2))) {
+            return outputPath;
+        }
 
         getShortestPathHelper(w1, w2);
+        
+        if(!marker)
+        {
+            outputPath = new ArrayList<String>();
+            return outputPath;
+        }
 
         return outputPath;
 
@@ -152,31 +164,23 @@ public class GraphProcessor {
         
         String w1 = word1;
         String w2 = word2;
-
-        // sanity check to see if both words are part of graph
-        if (!(vertexData.contains(w1) && vertexData.contains(w2))) {
-
-        }
-        // check if there is a connection between the to words
-        else if (dist[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == Integer.MAX_VALUE) {
-
-        }
+        
         // check if we are comparing identical words (base case of recursion)
-        else if (w1.equals(w2)) {
+        if (w1.equals(w2)) {
             outputPath.add(w1);
+            marker = true;
 
         }
         // next matrix shows 0, ie there is no connection (no more valid predecessors)
         else if (next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == 0 
                 || next[vertexData.indexOf(w1)][vertexData.indexOf(w2)] == -1) {
-            
+            marker = false;
         }
 
         else {
             getShortestPath(w1, vertexData.get(next[vertexData.indexOf(w1)][vertexData.indexOf(w2)]));
             outputPath.add(w2);
         }
-
     }
 
     /**
@@ -273,7 +277,8 @@ public class GraphProcessor {
                 for (int c = 0; c < vertexData.size(); c++) {
                     if (dist[b][a] == Integer.MAX_VALUE || dist[a][c] == Integer.MAX_VALUE) {
                         continue;
-                    } else if (dist[b][c] > dist[b][a] + dist[a][c]) {
+                    }
+                    if (dist[b][c] > dist[b][a] + dist[a][c]) {
                         dist[b][c] = dist[b][a] + dist[a][c];
                         next[b][c] = next[a][c];
                     }
