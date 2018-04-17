@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 // Lecturer's Name: Deb Deppeler
 //
 // Outside sources: http://www.programming-algorithms.net/article/45708/Floyd-Warshall-algorithm
-//                  (Implementation of Floyd-Worshall algorithm with predecessor matrix)
+// (Implementation of Floyd-Worshall algorithm with predecessor matrix)
 //
 // Known bugs: NONE
 //
@@ -255,13 +255,6 @@ public class GraphProcessor {
                 }
             }
         }
-
-
-        /*
-         * // creating the predecessor matrix (part of Floyd-Worshall) for (i = 0; i < dist.length;
-         * i++) { for (j = 0; j < dist.length; j++) { if (dist[i][j] != 0 && dist[i][j] !=
-         * Integer.MAX_VALUE) { next[i][j] = i; } else { next[i][j] = -1; } } }
-         */
 
     }
 
